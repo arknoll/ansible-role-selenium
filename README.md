@@ -24,6 +24,14 @@ None
   - selenium
 ```
 
+#### Start/Stop/Restart Selenium
+
+```
+$ service selenium start
+$ service selenium stop
+$ service selenium restart
+```
+
 #### License and Author
 
 Author:: Alex Knoll (arknoll@gmail.com)
