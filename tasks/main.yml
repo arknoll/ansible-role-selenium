@@ -8,15 +8,15 @@
   get_url: "url=http://selenium-release.storage.googleapis.com/{{ selenium_version | regex_replace('\\.[0-9]+$', '') }}/selenium-server-standalone-{{ selenium_version }}.jar dest=/opt/selenium/selenium-server-standalone-{{ selenium_version }}.jar"
   tags: [configuration, selenium, selenium-download]
 
-- name: install
-  template: src=init.j2 dest=/etc/init.d/selenium owner=root group=root mode=0755
-  tags: [configuration, selenium, selenium-install]
-
 - name: Install browser
   apt: name={{item}}
   with_items:
     - xvfb
     - firefox
+
+- name: install
+  template: src=init.j2 dest=/etc/init.d/selenium owner=root group=root mode=0755
+  tags: [configuration, selenium, selenium-install]
 
 - name: run
   service: name=selenium state=started enabled=yes
