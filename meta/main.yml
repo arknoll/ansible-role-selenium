@@ -1,0 +1,17 @@
+---
+# meta file for selenium
+galaxy_info:
+  author: Alex Knoll
+  description: Set up selenium in Debian-like systems
+  license: MIT
+  min_ansible_version: 1.3
+  platforms:
+  - name: Ubuntu
+    versions:
+    - all
+  - name: Debian
+    versions:
+    - all
+  categories:
+  - web
+dependencies:
