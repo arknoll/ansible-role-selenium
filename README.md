@@ -24,10 +24,6 @@ None
   - selenium
 ```
 
-#### License
-
-MIT
-
 #### License and Author
 
 Author:: Alex Knoll (arknoll@gmail.com)
