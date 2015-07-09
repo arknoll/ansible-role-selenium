@@ -31,12 +31,5 @@ script:
     && (echo 'Idempotence test: pass' && exit 0)
     || (echo 'Idempotence test: fail' && exit 1)
 
-  # Make sure Selenium is running.
-  - >
-    netstat -tulen | grep -q '4444'
-    && (echo 'Selenium is running' && exit 0)
-    || (echo 'Selenium is not running' && exit 1)
-  # And for posterity...
-  - netstat -tulen | grep '4444'
 notifications:
   email: false
