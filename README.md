@@ -1,6 +1,6 @@
 ## selenium [![Build Status](https://travis-ci.org/arknoll/ansible-role-selenium.svg?branch=master)](https://travis-ci.org/arknoll/ansible-role-selenium)
 
-Set up selenium in Debian-like systems.
+Set up selenium and Firefox for running selenium tests.
 
 #### Requirements
 
