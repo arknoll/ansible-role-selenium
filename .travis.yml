@@ -33,10 +33,10 @@ script:
 
   # Make sure Selenium is running.
   - >
-    netstat -tuplen | grep -q '4444'
+    netstat -tulen | grep -q '4444'
     && (echo 'Selenium is running' && exit 0)
     || (echo 'Selenium is not running' && exit 1)
   # And for posterity...
-  - netstat -tuplen | grep '4444'
+  - netstat -tulen | grep '4444'
 notifications:
   email: false
