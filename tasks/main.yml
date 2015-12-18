@@ -8,19 +8,30 @@
   get_url: "url=http://selenium-release.storage.googleapis.com/{{ selenium_version | regex_replace('\\.[0-9]+$', '') }}/selenium-server-standalone-{{ selenium_version }}.jar dest=/opt/selenium/selenium-server-standalone-{{ selenium_version }}.jar"
   tags: [configuration, selenium, selenium-download]
 
-- name: Install browser
+- name: Install xvfb
   apt: name={{item}}
   with_items:
     - xvfb
-    - firefox
   when: ansible_os_family == 'Debian'
+
+- name: Install browser
+  apt: name={{item}}
+  with_items:
+    - firefox
+  when: ansible_os_family == 'Debian' and selenium_install_firefox == 'true'
+
+- name: Install browser Xvfb
+  yum: name={{item}}
+  with_items:
+    - xorg-x11-server-Xvfb
+  when: ansible_os_family == 'RedHat'
 
 - name: Install browser
   yum: name={{item}}
   with_items:
-    - xorg-x11-server-Xvfb
     - firefox
-  when: ansible_os_family == 'RedHat'
+  when: ansible_os_family == 'RedHat' and selenium_install_firefox == 'true'
+
 
 - name: install
   template: src=selenium-init-{{ ansible_os_family }}.j2 dest=/etc/init.d/selenium owner=root group=root mode=0755
