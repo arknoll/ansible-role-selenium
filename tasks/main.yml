@@ -18,7 +18,7 @@
   apt: name={{item}}
   with_items:
     - firefox
-  when: ansible_os_family == 'Debian' and selenium_install_firefox == 'true'
+  when: ansible_os_family == 'Debian' and selenium_install_firefox
 
 - name: Install browser Xvfb
   yum: name={{item}}
@@ -30,7 +30,7 @@
   yum: name={{item}}
   with_items:
     - firefox
-  when: ansible_os_family == 'RedHat' and selenium_install_firefox == 'true'
+  when: ansible_os_family == 'RedHat' and selenium_install_firefox
 
 
 - name: install
