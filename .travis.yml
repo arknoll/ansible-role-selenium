@@ -3,7 +3,8 @@ language: python
 python: "2.7"
 
 env:
-  - ANSIBLE_VERSION=1.8
+  - ANSIBLE_VERSION=2.0
+  - ANSIBLE_VERSION=2.1
 
 before_install:
   - sudo apt-get update -qq
