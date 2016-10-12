@@ -4,6 +4,10 @@
   include_vars: "{{ ansible_os_family }}.yml"
   tags: [configuration, selenium]
 
+- name: Install dependencies
+  package: name=unzip
+  tags: [configuration, selenium]
+
 - name: create directory
   file: "path={{ selenium_install_dir }}/selenium state=directory recurse=yes"
   tags: [configuration, selenium, selenium-create-directory]
