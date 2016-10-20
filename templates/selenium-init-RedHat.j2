@@ -16,13 +16,12 @@ selenium_dir={{ selenium_install_dir }}/selenium
 selenium_jar_file="$selenium_dir/selenium-server-standalone-{{ selenium_version }}.jar"
 user=root
 exec="$xvfb_bin {{ selenium_xvfb_args }} $java_bin"
-args=" -client -jar $selenium_jar_file"
+args=" -client -jar $selenium_jar_file -p {{ selenium_port }}"
 lockfile="/var/lock/subsys/selenium"
 pidfile="$selenium_dir/selenium.pid"
 logfile="$selenium_dir/selenium.log"
 prog="selenium"
 display="{{ selenium_display_id }}"
-port="{{ selenium_port }}"
 
 RETVAL=0
 
