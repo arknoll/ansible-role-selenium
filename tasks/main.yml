@@ -1,5 +1,8 @@
 ---
-# Tasks file for selenium
+##############################################
+#                 PREPARE                    #
+##############################################
+
 - name: Include OS-Specific variables
   include_vars: "{{ ansible_os_family }}.yml"
   tags: [configuration, selenium]
@@ -8,21 +11,24 @@
   package: name=unzip
   tags: [configuration, selenium]
 
-- name: create directory
-  file: "path={{ selenium_install_dir }}/selenium state=directory recurse=yes"
-  tags: [configuration, selenium, selenium-create-directory]
+- name: Install xvfb
+  package: name={{ selenium_xvfb_package }}
+  tags: [configuration, selenium, selenium-xvfb]
 
-- name: Download Selenium
-  get_url:
-    url: "http://selenium-release.storage.googleapis.com/{{ selenium_version | regex_replace('\\.[0-9]+$', '') }}/selenium-server-standalone-{{ selenium_version }}.jar"
-    dest: "{{ selenium_install_dir }}/selenium/selenium-server-standalone-{{ selenium_version }}.jar"
-  tags: [configuration, selenium, selenium-download]
+##############################################
+#                 FIREFOX                    #
+##############################################
 
 - name: Install FireFox (if configured)
   package: name=firefox state=present
   when: selenium_install_firefox
   tags: [configuration, selenium, selenium-firefox]
 
+##############################################
+#                 CHROME                     #
+##############################################
+
+# Chrome for Ubuntu 12.04
 - name: Install Chromium (if configured, Ubuntu < 13)
   package: name=chromium-browser
   when:
@@ -31,23 +37,49 @@
     - selenium_install_chrome
   tags: [configuration, selenium, selenium-chrome]
 
+# Chrome for CentOS 6
+- name: Download chrome installer (if configured, CentOS < 7)
+  get_url:
+    url: "http://chrome.richardlloyd.org.uk/install_chrome.sh"
+    dest: "/tmp/install_chrome.sh"
+    mode: 0755
+  when:
+    - selenium_install_chrome
+    - ansible_distribution == 'CentOS'
+    - ansible_distribution_version|int < 7
+  tags: [configuration, selenium, selenium-chrome]
+
+- name: Execute chrome installer (if configured, CentOS < 7)
+  script: /tmp/install_chrome.sh -f
+  when:
+    - selenium_install_chrome
+    - ansible_distribution == 'CentOS'
+    - ansible_distribution_version|int < 7
+  tags: [configuration, selenium, selenium-chrome]
+
+# Chrome for all other debian-based distros
 - name: Install Chrome (if configured, Debian)
   apt:
     deb: https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
     state: present
   when:
-    - ansible_os_family == 'Debian'
     - selenium_install_chrome
+    - ansible_os_family == 'Debian'
     - (ansible_distribution != 'Ubuntu' or ansible_distribution_version|int > 12)
   tags: [configuration, selenium, selenium-chrome]
 
+# Chrome for all other RHEL based distros
 - name: Install Chrome (if configured, RedHat)
   yum:
     name: https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm
     state: present
-  when: ansible_os_family == 'RedHat' and selenium_install_chrome
+  when:
+    - selenium_install_chrome
+    - ansible_os_family == 'RedHat'
+    - (ansible_distribution != 'CentOS' or ansible_distribution_version|int > 6)
   tags: [configuration, selenium, selenium-chrome]
 
+# Chrome driver install
 - name: Get the latest release for chromedriver
   uri:
     url: http://chromedriver.storage.googleapis.com/LATEST_RELEASE
@@ -65,9 +97,19 @@
   when: selenium_install_chrome
   tags: [configuration, selenium, selenium-chrome]
 
-- name: Install xvfb
-  package: name={{ selenium_xvfb_package }}
-  tags: [configuration, selenium, selenium-xvfb]
+##############################################
+#                 SELENIUM                   #
+##############################################
+
+- name: create directory
+  file: "path={{ selenium_install_dir }}/selenium state=directory recurse=yes"
+  tags: [configuration, selenium, selenium-create-directory]
+
+- name: Download Selenium
+  get_url:
+    url: "http://selenium-release.storage.googleapis.com/{{ selenium_version | regex_replace('\\.[0-9]+$', '') }}/selenium-server-standalone-{{ selenium_version }}.jar"
+    dest: "{{ selenium_install_dir }}/selenium/selenium-server-standalone-{{ selenium_version }}.jar"
+  tags: [configuration, selenium, selenium-download]
 
 - name: Install init script
   template:
@@ -79,7 +121,7 @@
   when: ansible_distribution != 'Debian' or ansible_distribution_version|int < 8
   tags: [configuration, selenium, selenium-install]
 
-- name: Install systemd unit file (if Debian >= 8).
+- name: Install systemd unit file (if debian >= 8).
   template:
     src: selenium-unit-Debian.j2
     dest: /etc/systemd/system/selenium.service
@@ -89,7 +131,6 @@
   when: ansible_distribution == 'Debian' and ansible_distribution_version|int >= 8
   tags: [configuration, selenium, selenium-install]
 
-# check process running by ps!!
 - name: Ensure selenium is running
   service: name=selenium state=started enabled=yes
   tags: [configuration, selenium, selenium-run]
