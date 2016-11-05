@@ -43,6 +43,7 @@
     url: "http://chrome.richardlloyd.org.uk/install_chrome.sh"
     dest: "/tmp/install_chrome.sh"
     mode: 0755
+    validate_certs: no
   when:
     - selenium_install_chrome
     - ansible_distribution == 'CentOS'
