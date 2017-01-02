@@ -92,9 +92,6 @@
   ignore_errors: yes
   changed_when: false
 
-- name: Debug
-  debug: var=selenium_running
-
 - name: Ensure selenium is running
   service: name=selenium state=started enabled=yes
   tags: [configuration, selenium, selenium-run]
