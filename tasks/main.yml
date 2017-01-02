@@ -81,6 +81,21 @@
     (ansible_distribution == 'Fedora')
   tags: [configuration, selenium, selenium-install]
 
+- name: Register systemd service status (for systemd systems)
+  shell: 'systemctl status selenium | grep "active (running)"'
+  when: >
+    (ansible_distribution == 'Ubuntu' and ansible_distribution_version.split(".")[0]|int >= 16) or
+    (ansible_distribution == 'Debian' and ansible_distribution_version.split(".")[0]|int >= 8) or
+    (ansible_distribution == 'CentOS' and ansible_distribution_version.split(".")[0]|int >= 7) or
+    (ansible_distribution == 'Fedora')
+  register: selenium_running
+  ignore_errors: yes
+  changed_when: false
+
+- name: Debug
+  debug: var=selenium_running
+
 - name: Ensure selenium is running
   service: name=selenium state=started enabled=yes
   tags: [configuration, selenium, selenium-run]
+  when: selenium_running.failed is defined and selenium_running.failed == true
