@@ -8,4 +8,5 @@
       when: ansible_os_family == 'Debian'
 
   roles:
+    - geerlingguy.java
     - role_under_test
