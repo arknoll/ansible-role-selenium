@@ -23,9 +23,24 @@
   when: selenium_install_firefox
   tags: [configuration, selenium, selenium-firefox]
 
+- name: Add Chrome key (if configured, Debian)
+  apt_key:
+    url: "https://dl-ssl.google.com/linux/linux_signing_key.pub"
+    state: present
+  when: ansible_os_family == 'Debian' and selenium_install_chrome
+  tags: [configuration, selenium, selenium-chrome]
+
+- name: Add Chrome repo (if configured, Debian)
+  apt_repository:
+    repo: "deb http://dl.google.com/linux/chrome/deb/ stable main"
+    state: present
+    update_cache: yes
+  when: ansible_os_family == 'Debian' and selenium_install_chrome
+  tags: [configuration, selenium, selenium-chrome]
+
 - name: Install Chrome (if configured, Debian)
   apt:
-    deb: https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+    name: google-chrome-stable
     state: present
   when: ansible_os_family == 'Debian' and selenium_install_chrome
   tags: [configuration, selenium, selenium-chrome]
