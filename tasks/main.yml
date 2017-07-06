@@ -16,6 +16,7 @@
   get_url:
     url: "http://selenium-release.storage.googleapis.com/{{ selenium_version | regex_replace('\\.[0-9]+$', '') }}/selenium-server-standalone-{{ selenium_version }}.jar"
     dest: "{{ selenium_install_dir }}/selenium/selenium-server-standalone-{{ selenium_version }}.jar"
+  notify: restart selenium
   tags: [configuration, selenium, selenium-download]
 
 - name: Install FireFox (if configured)
@@ -83,6 +84,16 @@
   when: "ansible_service_mgr != 'systemd'"
   tags: [configuration, selenium, selenium-install]
 
+- name: Install wrapper script for xvfb-run (for systemd systems)
+  template:
+    src: "xvfb-run.sh.j2"
+    dest: /usr/local/bin/xvfb-run.sh
+    owner: root
+    group: root
+    mode: 0755
+  when: "ansible_service_mgr == 'systemd'"
+  tags: [configuration, selenium, selenium-install]
+
 - name: Install systemd unit file (for systemd systems)
   template:
     src: "selenium-unit.j2"
@@ -91,7 +102,12 @@
     group: root
     mode: 0755
   when: "ansible_service_mgr == 'systemd'"
+  register: selenium_service
   tags: [configuration, selenium, selenium-install]
+
+- name: Reload systemd
+  command: 'systemctl daemon-reload'
+  when: selenium_service.changed
 
 - name: Register systemd service status (for systemd systems)
   shell: 'systemctl status selenium | grep "active (running)"'

@@ -1,0 +1,3 @@
+#!/bin/sh
+
+/usr/bin/xvfb-run {{ selenium_xvfb_args }} /usr/bin/java -client -jar {{ selenium_install_dir }}/selenium/selenium-server-standalone-{{ selenium_version }}.jar
