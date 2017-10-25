@@ -104,3 +104,4 @@
   until: result.stdout.find("Selenium Server is up and running") != -1
   retries: 3
   delay: 5
+  when: "ansible_service_mgr == 'systemd'"
