@@ -83,6 +83,16 @@
   when: "ansible_service_mgr != 'systemd'"
   tags: [configuration, selenium, selenium-install]
 
+- name: Install start script (for systemd systems)
+  template:
+    src: "selenium-start.j2"
+    dest: /opt/selenium/start.sh
+    owner: root
+    group: root
+    mode: 0755
+  when: "ansible_service_mgr == 'systemd'"
+  tags: [configuration, selenium, selenium-install]
+
 - name: Install systemd unit file (for systemd systems)
   template:
     src: "selenium-unit.j2"
@@ -105,4 +115,5 @@
   retries: 3
   delay: 5
   changed_when: false
+  tags: [configuration, selenium, selenium-run]
   when: "ansible_service_mgr == 'systemd'"
