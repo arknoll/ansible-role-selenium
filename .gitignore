@@ -18,6 +18,7 @@ Thumbs.db
 *.komodoproject
 *.kpf
 /.idea
+/*.iml
 
 # Other files #
 ###############
