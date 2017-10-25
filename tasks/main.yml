@@ -86,7 +86,7 @@
 - name: Install start script (for systemd systems)
   template:
     src: "selenium-start.j2"
-    dest: /opt/selenium/start.sh
+    dest: "{{ selenium_install_dir }}/selenium/start.sh"
     owner: root
     group: root
     mode: 0755
