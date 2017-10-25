@@ -24,3 +24,4 @@ Thumbs.db
 ###############
 !empty
 /tests/test.sh
+/tests/test.retry
