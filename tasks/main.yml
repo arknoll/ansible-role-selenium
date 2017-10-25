@@ -93,14 +93,14 @@
   when: "ansible_service_mgr == 'systemd'"
   tags: [configuration, selenium, selenium-install]
 
-- name: Register systemd service status (for systemd systems)
-  shell: 'systemctl status selenium | grep "active (running)"'
-  when: "ansible_service_mgr == 'systemd'"
-  register: selenium_running
-  ignore_errors: yes
-  changed_when: false
-
-- name: Ensure selenium is running
+- name: Start selenium service (for systemd systems)
   service: name=selenium state=started enabled=yes
   tags: [configuration, selenium, selenium-run]
-  when: selenium_running.failed is defined and selenium_running.failed == true
+  when: "ansible_service_mgr == 'systemd'"
+
+- name: Ensure selenium server is up and running (for systemd systems)
+  shell: 'systemctl status selenium'
+  register: result
+  until: result.stdout.find("Selenium Server is up and running") != -1
+  retries: 3
+  delay: 5
