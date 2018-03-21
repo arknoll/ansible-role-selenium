@@ -9,7 +9,7 @@ Set up selenium and Firefox for running selenium tests.
 #### Variables
 
 * `selenium_install_dir`: [default: `/opt`] Install directory
-* `selenium_version`: [default: `2.53.0`] Install version
+* `selenium_version`: [default: `3.0.1`] Install version
 * `selenium_install_firefox`: [default: `no`] Whether to install FireFox
 * `selenium_install_chrome`: [default: `yes`] Whether to install Google Chrome
 

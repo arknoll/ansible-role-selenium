@@ -16,6 +16,7 @@
   get_url:
     url: "http://selenium-release.storage.googleapis.com/{{ selenium_version | regex_replace('\\.[0-9]+$', '') }}/selenium-server-standalone-{{ selenium_version }}.jar"
     dest: "{{ selenium_install_dir }}/selenium/selenium-server-standalone-{{ selenium_version }}.jar"
+  notify: restart selenium
   tags: [configuration, selenium, selenium-download]
 
 - name: Install FireFox (if configured)
