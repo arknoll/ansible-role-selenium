@@ -14,7 +14,7 @@
 
 - name: Download Selenium
   get_url:
-    url: "http://selenium-release.storage.googleapis.com/{{ selenium_version | regex_replace('\\.[0-9]+$', '') }}/selenium-server-standalone-{{ selenium_version }}.jar"
+    url: "https://selenium-release.storage.googleapis.com/{{ selenium_version | regex_replace('\\.[0-9]+$', '') }}/selenium-server-standalone-{{ selenium_version }}.jar"
     dest: "{{ selenium_install_dir }}/selenium/selenium-server-standalone-{{ selenium_version }}.jar"
   tags: [configuration, selenium, selenium-download]
 
