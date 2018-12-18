@@ -2,3 +2,9 @@
 # handlers file for selenium
 - name: restart selenium
   service: name=selenium state=restarted
+
+- name: reload unit
+  service:
+    name: selenium
+    state: restarted
+    daemon_reload: yes

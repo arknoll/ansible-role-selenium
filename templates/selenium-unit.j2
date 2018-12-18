@@ -3,7 +3,16 @@ Description=selenium test framework
 After=syslog.target network.target
 
 [Service]
-ExecStart=/usr/bin/xvfb-run {{ selenium_xvfb_args }} /usr/bin/java -client -jar {{ selenium_install_dir }}/selenium/selenium-server-standalone-{{ selenium_version }}.jar
+Environment=DISPLAY={{selenium_display_id}}
+PassEnvironment=DISPLAY
+User=selenium
+{% if selenium_role == "hub" %}
+ExecStart=/usr/bin/java -client -jar {{ selenium_install_dir }}/selenium/selenium-server-standalone-{{ selenium_version }}.jar -port {{ selenium_port }} -role hub
+{% elif selenium_role == "node" %}
+ExecStart=/bin/bash -c "/usr/bin/xvfb-run {{selenium_xvfb_args}} /usr/bin/java -client -jar {{ selenium_install_dir }}/selenium/selenium-server-standalone-{{ selenium_version }}.jar -port {{ selenium_port }} -role node -hub {{selenium_hub}}"
+{% else %}
+ExecStart=/bin/bash -c "/usr/bin/xvfb-run {{selenium_xvfb_args}} /usr/bin/java -client -jar {{ selenium_install_dir }}/selenium/selenium-server-standalone-{{ selenium_version }}.jar -port {{ selenium_port }}"
+{% endif %}
 Restart=on-failure
 RestartSec=20s
 

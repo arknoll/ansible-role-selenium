@@ -8,6 +8,12 @@
   package: name=unzip
   tags: [configuration, selenium]
 
+- name: Add the user selenium
+  user:
+    name: selenium
+    comment: Selenium User
+    system: yes
+
 - name: create directory
   file: "path={{ selenium_install_dir }}/selenium state=directory recurse=yes"
   tags: [configuration, selenium, selenium-create-directory]
@@ -92,15 +98,11 @@
     mode: 0755
   when: "ansible_service_mgr == 'systemd'"
   tags: [configuration, selenium, selenium-install]
+  notify: reload unit
 
-- name: Register systemd service status (for systemd systems)
-  shell: 'systemctl status selenium | grep "active (running)"'
-  when: "ansible_service_mgr == 'systemd'"
-  register: selenium_running
-  ignore_errors: yes
-  changed_when: false
+- name: force all notified handlers to run
+  meta: flush_handlers
 
 - name: Ensure selenium is running
   service: name=selenium state=started enabled=yes
   tags: [configuration, selenium, selenium-run]
-  when: selenium_running.failed is defined and selenium_running.failed == true
