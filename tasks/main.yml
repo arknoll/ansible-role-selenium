@@ -62,7 +62,7 @@
 
 - name: Install chromedriver
   unarchive:
-    src: "https://chromedriver.storage.googleapis.com/{{ chromedriver_latest.content | trim }}/chromedriver_linux64.zip"
+    src: "https://chromedriver.storage.googleapis.com/{{ chromedriver_latest.content | default('2.45') }}/chromedriver_linux64.zip"
     dest: /usr/bin
     mode: 0755
     copy: no
