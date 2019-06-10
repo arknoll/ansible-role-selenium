@@ -1,0 +1,5 @@
+skip_list:
+  - formatting
+  - command-shell
+  - idiom
+  - metadata
