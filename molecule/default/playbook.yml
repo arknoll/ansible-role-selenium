@@ -18,4 +18,4 @@
 
   roles:
     - geerlingguy.java
-    - ansible-role-selenium
+    - arknoll.ansible-role-selenium
