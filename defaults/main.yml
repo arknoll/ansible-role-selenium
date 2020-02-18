@@ -7,3 +7,5 @@ selenium_install_chrome: yes
 selenium_display_id: "1"
 selenium_port: 4444
 selenium_xvfb_args: "--server-args='-screen 0, 1920x1080x24'"
+selenium_role: "standalone"
+selenium_hub:

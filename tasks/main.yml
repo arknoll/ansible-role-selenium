@@ -8,6 +8,12 @@
   package: name=unzip
   tags: [configuration, selenium]
 
+- name: Add the user selenium
+  user:
+    name: selenium
+    comment: Selenium User
+    system: yes
+
 - name: create directory
   file: "path={{ selenium_install_dir }}/selenium state=directory recurse=yes"
   tags: [configuration, selenium, selenium-create-directory]
@@ -47,7 +53,7 @@
 
 - name: Install Chrome (if configured, RedHat)
   yum:
-    name: https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm
+    name: google-chrome-stable-75.0.3770.100-1
     state: present
   when: ansible_os_family == 'RedHat' and selenium_install_chrome
   tags: [configuration, selenium, selenium-chrome]
@@ -62,7 +68,7 @@
 
 - name: Install chromedriver
   unarchive:
-    src: "https://chromedriver.storage.googleapis.com/{{ chromedriver_latest.content | trim }}/chromedriver_linux64.zip"
+    src: "https://chromedriver.storage.googleapis.com/75.0.3770.90/chromedriver_linux64.zip"
     dest: /usr/bin
     mode: 0755
     copy: no
@@ -92,15 +98,11 @@
     mode: 0755
   when: "ansible_service_mgr == 'systemd'"
   tags: [configuration, selenium, selenium-install]
+  notify: reload unit
 
-- name: Register systemd service status (for systemd systems)
-  shell: 'systemctl status selenium | grep "active (running)"'
-  when: "ansible_service_mgr == 'systemd'"
-  register: selenium_running
-  ignore_errors: yes
-  changed_when: false
+- name: force all notified handlers to run
+  meta: flush_handlers
 
 - name: Ensure selenium is running
   service: name=selenium state=started enabled=yes
   tags: [configuration, selenium, selenium-run]
-  when: selenium_running.failed is defined and selenium_running.failed == true
