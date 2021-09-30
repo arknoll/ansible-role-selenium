@@ -30,6 +30,13 @@
   when: ansible_os_family == 'Debian' and selenium_install_chrome
   tags: [configuration, selenium, selenium-chrome]
 
+- name: Add Chrome key (if configured, Redhat)
+  ansible.builtin.rpm_key:
+    key: "https://dl-ssl.google.com/linux/linux_signing_key.pub"
+    state: present
+  when: ansible_os_family == 'RedHat' and selenium_install_chrome
+  tags: [configuration, selenium, selenium-chrome]
+
 - name: Add Chrome repo (if configured, Debian)
   apt_repository:
     repo: "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main"
